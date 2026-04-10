@@ -1,0 +1,7 @@
+{
+  "name": "签易签 - 电子合同签署平台",
+  "description": "专业、安全、高效的电子合同签署与管理平台，支持区块链存证与实名认证。",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}

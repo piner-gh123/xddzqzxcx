@@ -33,7 +33,10 @@ import {
   MoreHorizontal,
   Folder,
   Image as ImageIcon,
-  FileUp
+  FileUp,
+  Calendar,
+  Type,
+  X
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -53,7 +56,8 @@ type View =
   | 'announcement' 
   | 'messages'
   | 'property-details'
-  | 'contract-setup';
+  | 'contract-setup'
+  | 'signing-editor';
 
 // --- Components ---
 
@@ -620,7 +624,7 @@ const ContractDetailsView = ({ onBack }: { onBack: () => void }) => {
 };
 const IdentityAuthView = ({ onBack }: { onBack: () => void }) => {
   return (
-    <div className="flex flex-col min-h-screen bg-slate-50 dark:bg-slate-950">
+    <div className="flex flex-col min-h-screen bg-slate-50 dark:bg-slate-950 pb-24">
       <Header title="身份认证中心" showBack onBack={onBack} />
       
       <div className="bg-white dark:bg-slate-900 py-8 px-6 border-b border-slate-100 dark:border-slate-800">
@@ -705,7 +709,7 @@ const IdentityAuthView = ({ onBack }: { onBack: () => void }) => {
 };
 
 const MessagesView = ({ onBack }: { onBack: () => void }) => (
-  <div className="flex flex-col min-h-screen bg-slate-50 dark:bg-slate-950">
+  <div className="flex flex-col min-h-screen bg-slate-50 dark:bg-slate-950 pb-24">
     <Header title="消息通知" showBack onBack={onBack} />
     <main className="p-4 space-y-4">
       {[1, 2, 3].map(i => (
@@ -817,7 +821,7 @@ const SearchView = ({ onBack, onNavigate }: { onBack: () => void, onNavigate: (v
 };
 
 const AnnouncementView = ({ onBack }: { onBack: () => void }) => (
-  <div className="flex flex-col min-h-screen bg-slate-50 dark:bg-slate-950">
+  <div className="flex flex-col min-h-screen bg-slate-50 dark:bg-slate-950 pb-24">
     <Header title="系统公告" showBack onBack={onBack} />
     <main className="p-6 bg-white dark:bg-slate-900 m-4 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm">
       <h3 className="font-bold text-lg mb-2">关于2024年系统维护的通知</h3>
@@ -833,7 +837,7 @@ const AnnouncementView = ({ onBack }: { onBack: () => void }) => (
 );
 
 const InitiateContractView = ({ onBack, onNavigate }: { onBack: () => void, onNavigate: (v: View) => void }) => (
-  <div className="flex flex-col min-h-screen bg-slate-50 dark:bg-slate-950">
+  <div className="flex flex-col min-h-screen bg-slate-50 dark:bg-slate-950 pb-24">
     <Header title="发起签署" showBack onBack={onBack} />
     <main className="p-4 space-y-6">
       <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm text-center space-y-4">
@@ -865,7 +869,7 @@ const InitiateContractView = ({ onBack, onNavigate }: { onBack: () => void, onNa
 );
 
 const PropertyDetailsView = ({ onBack, onNavigate }: { onBack: () => void, onNavigate: (v: View) => void }) => (
-  <div className="flex flex-col min-h-screen bg-white dark:bg-slate-950">
+  <div className="flex flex-col min-h-screen bg-white dark:bg-slate-950 pb-24">
     <Header title="房源详情" showBack onBack={onBack} />
     <main className="flex-1 overflow-y-auto">
       <div className="p-4 space-y-4">
@@ -921,7 +925,12 @@ const ContractSetupView = ({ onBack, onNavigate }: { onBack: () => void, onNavig
         <div className="space-y-3">
           <div className="flex items-center justify-between px-1">
             <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100">文档预览</h3>
-            <button className="text-blue-600 text-sm font-bold">编辑</button>
+            <button 
+              onClick={() => onNavigate('signing-editor')}
+              className="text-blue-600 text-sm font-bold active:scale-95 transition-transform"
+            >
+              编辑
+            </button>
           </div>
           <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm flex gap-4">
             <div className="flex-1 space-y-4">
@@ -1006,7 +1015,7 @@ const ContractSetupView = ({ onBack, onNavigate }: { onBack: () => void, onNavig
         </div>
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 p-4 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-t border-slate-100 dark:border-slate-800 z-30">
+      <div className="fixed bottom-[72px] left-0 right-0 p-4 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-t border-slate-100 dark:border-slate-800 z-30">
         <div className="max-w-md mx-auto space-y-2">
           <button className="w-full bg-blue-600 text-white font-bold py-4 rounded-2xl shadow-lg shadow-blue-600/20 flex items-center justify-center gap-2 active:scale-95 transition-transform">
             <span>设置签署区</span>
@@ -1019,8 +1028,98 @@ const ContractSetupView = ({ onBack, onNavigate }: { onBack: () => void, onNavig
   );
 };
 
+const SigningEditorView = ({ onBack }: { onBack: () => void }) => {
+  return (
+    <div className="flex flex-col min-h-screen bg-slate-50 dark:bg-slate-950 pb-24">
+      {/* Header */}
+      <header className="flex items-center justify-between bg-white dark:bg-slate-900 p-4 border-b border-slate-100 dark:border-slate-800 sticky top-0 z-20">
+        <button onClick={onBack} className="p-1 -ml-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
+          <ChevronLeft size={24} />
+        </button>
+        <div className="text-center">
+          <h2 className="text-sm font-bold tracking-tight">软件服务协议_v2.pdf</h2>
+          <p className="text-[10px] text-slate-400">第 1 页 / 共 4 页</p>
+        </div>
+        <button className="bg-blue-600 text-white text-xs font-bold px-4 py-2 rounded-full shadow-lg shadow-blue-600/20 active:scale-95 transition-transform">
+          完成签署
+        </button>
+      </header>
+
+      {/* Document Content */}
+      <main className="flex-1 overflow-y-auto p-4 flex flex-col items-center">
+        <div className="w-full max-w-md bg-white dark:bg-slate-900 shadow-xl rounded-sm aspect-[1/1.414] p-8 relative">
+          {/* Mock Document Text Lines */}
+          <div className="space-y-4">
+            <div className="h-6 bg-slate-100 dark:bg-slate-800 rounded w-1/3 mb-8" />
+            {[...Array(8)].map((_, i) => (
+              <div key={i} className="h-3 bg-slate-50 dark:bg-slate-800/50 rounded w-full" />
+            ))}
+            <div className="h-3 bg-slate-50 dark:bg-slate-800/50 rounded w-2/3" />
+          </div>
+
+          <div className="mt-12 grid grid-cols-2 gap-8">
+            <div className="space-y-4">
+              <p className="text-[10px] font-bold text-slate-400 uppercase">甲方（盖章/签名）</p>
+              <div className="aspect-video border-2 border-dashed border-blue-200 dark:border-blue-900/50 rounded-lg flex items-center justify-center bg-blue-50/30 dark:bg-blue-900/10">
+                <Edit3 size={32} className="text-blue-300 dark:text-blue-800" />
+              </div>
+            </div>
+            <div className="space-y-4 relative">
+              <p className="text-[10px] font-bold text-slate-400 uppercase">乙方（盖章/签名）</p>
+              <div className="aspect-video border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-lg flex items-center justify-center bg-slate-50/50 dark:bg-slate-900/50 relative">
+                <div className="size-10 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-white">
+                  <Plus size={24} />
+                </div>
+                {/* Mock Signature Overlay */}
+                <div className="absolute -top-6 -left-2 right-0 bottom-0 bg-blue-50/80 dark:bg-blue-900/40 border border-blue-400 rounded-lg p-2 flex items-center justify-center shadow-lg">
+                   <img src="https://picsum.photos/seed/sig/100/50" className="mix-blend-multiply dark:invert" alt="Signature" referrerPolicy="no-referrer" />
+                   <button className="absolute -top-2 -right-2 size-5 bg-blue-600 text-white rounded-full flex items-center justify-center shadow-md">
+                     <X size={12} />
+                   </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-12 space-y-2">
+            <div className="h-3 bg-slate-50 dark:bg-slate-800/50 rounded w-1/2" />
+            <div className="h-3 bg-slate-50 dark:bg-slate-800/50 rounded w-1/3" />
+          </div>
+        </div>
+
+        {/* Floating Tip */}
+        <div className="mt-6 bg-slate-800/90 backdrop-blur text-white px-4 py-2.5 rounded-full flex items-center gap-2 text-xs font-medium shadow-xl">
+          <div className="size-5 bg-white/20 rounded flex items-center justify-center">
+            <Plus size={12} className="rotate-45" />
+          </div>
+          长按或拖拽工具到文档中签署
+        </div>
+      </main>
+
+      {/* Bottom Toolbar */}
+      <div className="bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 p-4 pb-24">
+        <div className="grid grid-cols-4 gap-4 max-w-md mx-auto">
+          {[
+            { label: '我的签名', icon: Edit3 },
+            { label: '企业公章', icon: Stamp },
+            { label: '日期', icon: Calendar },
+            { label: '文本框', icon: Type },
+          ].map((tool, i) => (
+            <button key={i} className="flex flex-col items-center gap-2 active:scale-95 transition-transform">
+              <div className="size-12 bg-slate-50 dark:bg-slate-800 rounded-2xl flex items-center justify-center text-slate-600 dark:text-slate-300 shadow-sm">
+                <tool.icon size={24} />
+              </div>
+              <span className="text-[10px] font-bold text-slate-500">{tool.label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const SecuritySettingsView = ({ onBack }: { onBack: () => void }) => (
-  <div className="flex flex-col min-h-screen bg-slate-50 dark:bg-slate-950">
+  <div className="flex flex-col min-h-screen bg-slate-50 dark:bg-slate-950 pb-24">
     <Header title="安全设置" showBack onBack={onBack} />
     <main className="p-4 space-y-4">
       <div className="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden border border-slate-100 dark:border-slate-800">
@@ -1078,6 +1177,7 @@ export default function App() {
       case 'initiate-contract': return <InitiateContractView onBack={back} onNavigate={navigate} />;
       case 'property-details': return <PropertyDetailsView onBack={back} onNavigate={navigate} />;
       case 'contract-setup': return <ContractSetupView onBack={back} onNavigate={navigate} />;
+      case 'signing-editor': return <SigningEditorView onBack={back} />;
       default: return <HomeView onNavigate={navigate} />;
     }
   };
@@ -1098,9 +1198,7 @@ export default function App() {
           </motion.div>
         </AnimatePresence>
         
-        {['home', 'documents', 'seals', 'profile', 'search'].includes(activeView) && (
-          <BottomNav activeView={activeView} onViewChange={navigate} />
-        )}
+        <BottomNav activeView={activeView} onViewChange={navigate} />
       </div>
     </div>
   );
